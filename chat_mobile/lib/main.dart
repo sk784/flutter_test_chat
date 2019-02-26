@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
+
 import 'chat_list.dart';
 import 'create_chat.dart';
+import 'login.dart';
 
 void main() => runApp(SimpleChatApp());
 
@@ -15,12 +16,10 @@ class SimpleChatApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(title: 'Simple Chat Login'),
-        '/chat_list': (context) => ChatListPage(title: 'Simple Chat Login'),
+        '/': (context) => LoginPage(),
+        '/chat_list': (context) => ChatListPage(title: 'Chat list'),
         '/create_chat': (context) => CreateChatPage(title: 'Create Chat'),
       },
     );
   }
 }
-
-

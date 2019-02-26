@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
-import 'globals.dart' as globals;
+import 'package:flutter/material.dart';
+
 import 'api_client.dart';
+import 'common_ui.dart';
+import 'globals.dart' as globals;
 
 class CreateChatPage extends StatefulWidget {
   CreateChatPage({Key key, this.title}) : super(key: key);
@@ -26,6 +28,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: <Widget>[LogoutButton()],
         ),
         body: Column(
           children: <Widget>[
@@ -83,9 +86,9 @@ class _CreateChatPageState extends State<CreateChatPage> {
     if (_checkedCounterparts.isNotEmpty) {
       try {
         ChatsClient chatsClient = ChatsClient(MobileApiClient());
-        final newChat = await chatsClient.create(
+        await chatsClient.create(
             Chat(members: _checkedCounterparts..add(globals.currentUser)));
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } on Exception catch (e) {
         print('Chat creation failed');
         print(e);

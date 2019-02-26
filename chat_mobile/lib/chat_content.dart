@@ -3,9 +3,10 @@ import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'chat_component.dart';
-import 'globals.dart' as globals;
 import 'api_client.dart';
+import 'chat_component.dart';
+import 'common_ui.dart';
+import 'globals.dart' as globals;
 
 class ChatContentPage extends StatefulWidget {
   ChatContentPage({Key key, @required this.title, @required this.chatId})
@@ -67,6 +68,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[LogoutButton()],
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),

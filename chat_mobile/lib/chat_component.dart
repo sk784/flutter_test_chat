@@ -1,10 +1,10 @@
 library chat_component;
 
-import 'package:chat_models/chat_models.dart';
-import 'dart:convert';
-
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:chat_models/chat_models.dart';
 
 /// The component incapsulates websocket connection and provides a stream
 /// of received messages.
