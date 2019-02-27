@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,9 @@ import 'common_ui.dart';
 import 'globals.dart' as globals;
 
 class ChatContentPage extends StatefulWidget {
-  ChatContentPage({Key key, @required this.chat}) : super(key: key);
+  ChatContentPage({Key key, @required this.chat, @required this.chatComponent})
+      : super(key: key);
+  final ChatComponent chatComponent;
   final Chat chat;
   final formatter = DateFormat('HH:mm');
 
@@ -21,7 +26,9 @@ class _ChatContentPageState extends State<ChatContentPage> {
   String _title;
   var _messages = <Message>[];
   final _sendMessageTextController = TextEditingController();
-  ChatComponent _chatComponent;
+  StreamSubscription<Message> _messagesSubscription;
+  StreamSubscription<Set<ChatId>> _unreadMessagesSubscription;
+  Set<ChatId> _unreadChats = HashSet<ChatId>();
 
   @override
   void initState() {
@@ -31,25 +38,28 @@ class _ChatContentPageState extends State<ChatContentPage> {
         .map((user) => user.name)
         .join(", ");
     refreshChatContent();
-    _chatComponent = ChatComponent(globals.webSocketAddress)
-      ..connect().then((_) {
-        _chatComponent.messages.listen((receivedMessage) {
-          if (receivedMessage.chat == widget.chat.id &&
-              receivedMessage.author.id != globals.currentUser.id) {
-            setState(() {
-              _messages.add(receivedMessage);
-            });
-          }
-        });
-      }).catchError((connectionError) {
-        // TODO: websocket connection error handling here
+
+    _messagesSubscription =
+        widget.chatComponent.subscribeMessages((receivedMessage) {
+      setState(() {
+        _messages.add(receivedMessage);
       });
+    }, widget.chat.id);
+
+    _unreadMessagesSubscription = widget.chatComponent
+        .subscribeUnreadMessagesNotification((unreadChatIds) {
+      setState(() {
+        _unreadChats.clear();
+        _unreadChats.addAll(unreadChatIds);
+      });
+    });
   }
 
   @override
   void dispose() {
     _sendMessageTextController.dispose();
-    _chatComponent.dispose();
+    _messagesSubscription.cancel();
+    _unreadMessagesSubscription.cancel();
     super.dispose();
   }
 
@@ -68,10 +78,22 @@ class _ChatContentPageState extends State<ChatContentPage> {
 
   @override
   Widget build(BuildContext context) {
+    var actions = <Widget>[];
+    if (_unreadChats.isNotEmpty) {
+      actions.add(IconButton(
+          icon: Icon(Icons.message),
+          tooltip: 'New messages',
+          color: Colors.greenAccent,
+          onPressed: () {
+            Navigator.popUntil(context, ModalRoute.withName('/chat_list'));
+          }));
+    }
+    actions.add(LogoutButton());
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
-        actions: <Widget>[LogoutButton()],
+        actions: actions,
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
@@ -126,12 +148,8 @@ class _ChatContentPageState extends State<ChatContentPage> {
         text: message,
         createdAt: DateTime.now());
     try {
-      final createdMessage =
-          await MessagesClient(MobileApiClient()).create(newMessage);
+      await MessagesClient(MobileApiClient()).create(newMessage);
       _sendMessageTextController.clear();
-      setState(() {
-        _messages.add(createdMessage);
-      });
     } on Exception catch (e) {
       print('Sending message failed');
       print(e);

@@ -3,6 +3,7 @@ import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
 
 import 'api_client.dart';
+import 'chat_component.dart';
 import 'chat_content.dart';
 import 'common_ui.dart';
 import 'globals.dart' as globals;
@@ -94,6 +95,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
           MaterialPageRoute(
             builder: (BuildContext context) => ChatContentPage(
                   chat: createdChat,
+                  chatComponent: ChatComponentWidget.of(context).chatComponent,
                 ),
           ),
           result: true,
