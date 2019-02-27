@@ -3,6 +3,7 @@ import 'package:chat_models/chat_models.dart';
 import 'package:flutter/material.dart';
 
 import 'api_client.dart';
+import 'chat_content.dart';
 import 'common_ui.dart';
 import 'globals.dart' as globals;
 
@@ -86,9 +87,17 @@ class _CreateChatPageState extends State<CreateChatPage> {
     if (_checkedCounterparts.isNotEmpty) {
       try {
         ChatsClient chatsClient = ChatsClient(MobileApiClient());
-        await chatsClient.create(
+        Chat createdChat = await chatsClient.create(
             Chat(members: _checkedCounterparts..add(globals.currentUser)));
-        Navigator.pop(context, true);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ChatContentPage(
+                  chat: createdChat,
+                ),
+          ),
+          result: true,
+        );
       } on Exception catch (e) {
         print('Chat creation failed');
         print(e);

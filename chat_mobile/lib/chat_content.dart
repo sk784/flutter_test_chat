@@ -9,10 +9,8 @@ import 'common_ui.dart';
 import 'globals.dart' as globals;
 
 class ChatContentPage extends StatefulWidget {
-  ChatContentPage({Key key, @required this.title, @required this.chatId})
-      : super(key: key);
-  final String title;
-  final ChatId chatId;
+  ChatContentPage({Key key, @required this.chat}) : super(key: key);
+  final Chat chat;
   final formatter = DateFormat('HH:mm');
 
   @override
@@ -20,6 +18,7 @@ class ChatContentPage extends StatefulWidget {
 }
 
 class _ChatContentPageState extends State<ChatContentPage> {
+  String _title;
   var _messages = <Message>[];
   final _sendMessageTextController = TextEditingController();
   ChatComponent _chatComponent;
@@ -27,11 +26,15 @@ class _ChatContentPageState extends State<ChatContentPage> {
   @override
   void initState() {
     super.initState();
+    _title = widget.chat.members
+        .where((user) => user.id != globals.currentUser.id)
+        .map((user) => user.name)
+        .join(", ");
     refreshChatContent();
     _chatComponent = ChatComponent(globals.webSocketAddress)
       ..connect().then((_) {
         _chatComponent.messages.listen((receivedMessage) {
-          if (receivedMessage.chat == widget.chatId &&
+          if (receivedMessage.chat == widget.chat.id &&
               receivedMessage.author.id != globals.currentUser.id) {
             setState(() {
               _messages.add(receivedMessage);
@@ -53,7 +56,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
   void refreshChatContent() async {
     try {
       List<Message> msgList =
-          await MessagesClient(MobileApiClient()).read(widget.chatId);
+          await MessagesClient(MobileApiClient()).read(widget.chat.id);
       setState(() {
         _messages = msgList;
       });
@@ -67,7 +70,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_title),
         actions: <Widget>[LogoutButton()],
       ),
       body: Container(
@@ -118,7 +121,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
 
   send(String message) async {
     final newMessage = Message(
-        chat: widget.chatId,
+        chat: widget.chat.id,
         author: globals.currentUser,
         text: message,
         createdAt: DateTime.now());

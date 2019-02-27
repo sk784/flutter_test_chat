@@ -33,6 +33,7 @@ class _ChatListPageState extends State<ChatListPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[LogoutButton()],
+        automaticallyImplyLeading: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -65,8 +66,7 @@ class _ChatListPageState extends State<ChatListPage> {
             new MaterialPageRoute(
               builder: (context) {
                 return ChatContentPage(
-                  title: 'Chat Content',
-                  chatId: chat.id,
+                  chat: chat,
                 );
               },
             ),

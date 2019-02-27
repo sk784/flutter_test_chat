@@ -20,6 +20,8 @@ class _LoginData {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   _LoginData _loginData = new _LoginData();
+  final TextEditingController _loginController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
 
   String _validateLogin(String value) {
     if (value.length < 2) {
@@ -50,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextFormField(
+                    controller: _loginController,
                     validator: this._validateLogin,
                     onSaved: (String value) {
                       this._loginData.login = value;
@@ -58,7 +61,9 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: 'Login', labelText: 'Enter your login'),
                   ),
                   TextFormField(
-                    obscureText: true, // Use secure text for passwords.
+                    controller: _passwordController,
+                    obscureText: true,
+                    // Use secure text for passwords.
                     validator: this._validatePassword,
                     onSaved: (String value) {
                       this._loginData.password = value;
@@ -77,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                               _login(scaffoldContext);
                             }),
                         FlatButton(
-                          child: Text("Sign In"),
+                          child: Text("Sign up"),
                           onPressed: () {
                             _signUp(scaffoldContext);
                           },
@@ -98,13 +103,23 @@ class _LoginPageState extends State<LoginPage> {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
       _showDialog(_loginData.login).then((resultValue) {
-        try {
+        if (resultValue != null && resultValue is bool && resultValue) {
           UsersClient usersClient = UsersClient(MobileApiClient());
-          usersClient.create(
-              User(name: _loginData.login, password: _loginData.password));
-        } on Exception catch (e) {
-          print('SignUp failed');
-          print(e);
+          usersClient
+              .create(
+                  User(name: _loginData.login, password: _loginData.password))
+              .then((createdUser) {
+            _clearUi();
+            final snackBar =
+                SnackBar(content: Text('User \'${createdUser.name}\' created'));
+            Scaffold.of(context).showSnackBar(snackBar);
+          }).catchError((signUpError) {
+            final snackBar = SnackBar(
+                content: Text('Sign up failed: ${signUpError.message}'));
+            Scaffold.of(context).showSnackBar(snackBar);
+            print('Sign up failed');
+            print(signUpError);
+          });
         }
       });
     }
@@ -123,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
           globals.currentUser = null;
           globals.authToken = null;
         });
+        _clearUi();
       } on Exception catch (e) {
         final snackBar = SnackBar(content: Text('Login failed'));
         Scaffold.of(context).showSnackBar(snackBar);
@@ -155,5 +171,10 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+  }
+
+  void _clearUi() {
+    _loginController.clear();
+    _passwordController.clear();
   }
 }
