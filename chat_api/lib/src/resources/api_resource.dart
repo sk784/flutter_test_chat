@@ -36,6 +36,6 @@ class ApiResource {
   /// Handles web-socket connection request
   @Get(path: 'ws')
   shelf.Response handleUpgradeRequest(shelf.Request request, Map context) {
-    return _wsConnectionHandler(request);
+      return _wsConnectionHandler(request);
   }
 }

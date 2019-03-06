@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:chat_models/chat_models.dart';
 import 'package:rest_api_client/rest_api_client.dart';
 
