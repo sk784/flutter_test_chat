@@ -8,12 +8,19 @@ abstract class SignInComponentPO {
   // ignore: redirect_to_non_class
   factory SignInComponentPO.create(PageLoaderElement context) = $SignInComponentPO.create;
 
+  @First(ByCss('input[type=text]'))
+  PageLoaderElement get usernameInput;
+
+  @First(ByCss('input[type=password]'))
+  PageLoaderElement get psswordInput;
+
   @First(ByCss('material-input[type=text]'))
-  PageLoaderElement get _usernameInput;
+  PageLoaderElement get usernameMaterialInput;
 
   @First(ByCss('material-input[type=password]'))
-  PageLoaderElement get _psswordInput;
+  PageLoaderElement get passwordMaterialInput;
 
-  PageLoaderElement get usernameInput => _usernameInput;
-  PageLoaderElement get psswordInput => _psswordInput;
+  @First(ByCss('material-button'))
+  PageLoaderElement get signInButton;
+  
 }

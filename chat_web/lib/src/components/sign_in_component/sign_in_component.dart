@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show HttpException;
 
 import 'package:angular/angular.dart';
@@ -17,9 +18,6 @@ import 'package:chat_web/services.dart';
       materialInputDirectives,
       routerDirectives
     ],
-    providers: [
-      ClassProvider(WebUsersClient),
-    ],
     exports: [
       RoutePaths
     ])
@@ -29,8 +27,9 @@ class SignInComponent {
   WebUsersClient usersClient;
   Router router;
   Session session;
-
+  
   SignInComponent(this.usersClient, this.router, this.session);
+
 
   signIn() async {
     try {
