@@ -1,4 +1,6 @@
 import 'package:angular/angular.dart';
+import 'package:angular_router/angular_router.dart';
+import 'package:mockito/mockito.dart';
 
 class InjectorProbe {
   InjectorFactory _parent;
@@ -12,3 +14,12 @@ class InjectorProbe {
   Injector _factory([Injector parent]) => _injector = _parent(parent);
   T get<T>(dynamic token) => injector?.get(token);
 }
+
+class MockRouter extends Mock implements Router {}
+
+const routerProvidersForTesting = [
+  ClassProvider(LocationStrategy),
+  ClassProvider(PlatformLocation),
+  ClassProvider(Location),
+  ClassProvider(Router, useClass: MockRouter)
+];

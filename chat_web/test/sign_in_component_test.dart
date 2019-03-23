@@ -9,20 +9,23 @@ import 'package:chat_web/services.dart';
 import 'package:angular_router/angular_router.dart';
 import 'sign_in_component_po.dart';
 import 'package:pageloader/html.dart';
+import 'package:mockito/mockito.dart';
+import 'utils.dart';
+
+class MockSession extends Mock implements Session {}
 
 @GenerateInjector([
-  ClassProvider(WebApiClient),
-  ClassProvider(WebUsersClient),
-  ClassProvider(Session),
-  routerProvidersHash
+  ClassProvider(Session, useClass: MockSession),
+  routerProvidersForTesting
 ])
 // ignore: undefined_getter
 InjectorFactory rootInjector = self.rootInjector$Injector;
 
 main() {
+  final injector =InjectorProbe(rootInjector);
   final testBed = NgTestBed.forComponent(
     ng.SignInComponentNgFactory,
-    rootInjector: rootInjector
+    rootInjector: injector.factory
   );
   NgTestFixture<SignInComponent> fixture;
   SignInComponentPO po; 
