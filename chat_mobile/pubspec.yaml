@@ -15,10 +15,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+<<<<<<< HEAD
   chat_models:
     path: ../chat_models
   chat_api_client:
     path: ../chat_api_client
+=======
+  chat_api_client:
+    path: ../chat_api_client
+  intl: 0.15.7
+>>>>>>> tech-train
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

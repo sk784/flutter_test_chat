@@ -17,7 +17,10 @@ import 'package:chat_web/services.dart';
       MaterialIconComponent,
       routerDirectives
     ],
-    providers: [ClassProvider(WebApiClient), ClassProvider(Session)],
+    providers: [
+      ClassProvider(WebApiClient),
+      ClassProvider(Session)
+    ],
     exports: [RoutePaths, Routes])
 class AppComponent {
   Session session;
