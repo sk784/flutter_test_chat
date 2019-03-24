@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io' show HttpException;
 
 import 'package:angular/angular.dart';
