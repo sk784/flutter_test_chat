@@ -2,18 +2,19 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:test/test.dart';
-import 'package:angular_test/angular_test.dart';
-import 'package:chat_web/src/components/sign_in_component/sign_in_component.dart';
-import 'sign_in_component_test.template.dart' as self;
-import 'package:chat_web/services.dart';
-import 'sign_in_component_po.dart';
-import 'package:pageloader/html.dart';
-import 'package:mockito/mockito.dart';
-import 'utils.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:angular_test/angular_test.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/routes.dart';
+import 'package:chat_web/services.dart';
+import 'package:chat_web/src/components/sign_in_component/sign_in_component.dart';
+import 'package:mockito/mockito.dart';
+import 'package:pageloader/html.dart';
+import 'package:test/test.dart';
+
+import 'sign_in_component_po.dart';
+import 'sign_in_component_test.template.dart' as self;
+import 'utils.dart';
 
 class MockSession extends Mock implements Session {}
 class MockWebApiClient extends Mock implements WebApiClient {}
