@@ -133,7 +133,7 @@ class ChatComponentWidget extends InheritedWidget {
   ChatComponentWidget(this.chatComponent, child) : super(child: child);
 
   static ChatComponentWidget of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(ChatComponentWidget);
+    return context.dependOnInheritedWidgetOfExactType<ChatComponentWidget>();
   }
 
   @override

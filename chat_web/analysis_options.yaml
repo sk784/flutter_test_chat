@@ -1,5 +1,8 @@
 analyzer:
-  exclude: [build/**]
+  exclude:
+    - build/**
+    - test/**/*.g.dart
+    - lib/**/*.g.dart
   errors:
     uri_has_not_been_generated: ignore
   # Angular plugin support is in beta. You're welcome to try it and report
