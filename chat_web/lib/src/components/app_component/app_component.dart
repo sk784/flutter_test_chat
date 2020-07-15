@@ -3,6 +3,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:chat_web/routes.dart';
 import 'package:chat_web/services.dart';
+import 'package:rest_api_client/rest_api_client.dart';
 
 @Component(
     selector: 'my-app',
@@ -18,7 +19,7 @@ import 'package:chat_web/services.dart';
       routerDirectives
     ],
     providers: [
-      ClassProvider(WebApiClient),
+      ClassProvider(ApiClient, useClass: WebApiClient),
       ClassProvider(Session)
     ],
     exports: [RoutePaths, Routes])

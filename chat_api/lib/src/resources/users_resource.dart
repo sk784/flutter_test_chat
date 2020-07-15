@@ -1,18 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chat_api/collections.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:rest_api_server/annotations.dart';
 import 'package:rest_api_server/http_exception.dart';
+import 'package:rest_api_server/service_registry.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
 /// Users resource
+@Resource(path: 'users')
 class UsersResource {
-  UsersCollection usersCollection;
+  UsersCollection usersCollection = locateService<UsersCollection>();
 
-  UsersResource({this.usersCollection});
+  UsersResource();
 
   /// Makes login
   @Post(path: 'login')
@@ -28,6 +31,7 @@ class UsersResource {
       throw UnauthorizedException({}, 'Incorrect username or password');
     final user = found.single;
     return shelf.Response.ok(json.encode(user.json),
+        headers: {'Content-Type': ContentType.json.toString()},
         context: {'subject': user.id.json, 'payload': user.json});
   }
 

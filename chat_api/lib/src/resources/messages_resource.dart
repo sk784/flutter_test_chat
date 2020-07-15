@@ -7,16 +7,14 @@ import 'package:chat_models/chat_models.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:rest_api_server/annotations.dart';
 import 'package:rest_api_server/http_exception.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:rest_api_server/service_registry.dart';
 
 /// Messages resource
+@Resource(path: 'chats/{chatIdStr}/messages')
 class MessagesResource {
-  MessagesCollection messagesCollection;
-  ChatsCollection chatsCollection;
-  List<WebSocketChannel> wsChannels;
-
-  MessagesResource(
-      {this.chatsCollection, this.messagesCollection, this.wsChannels});
+  MessagesCollection messagesCollection = locateService<MessagesCollection>();
+  ChatsCollection chatsCollection = locateService<ChatsCollection>();
+  WsChannels wsChannels = locateService<WsChannels>();
 
   /// Creates new message in database
   @Post()
@@ -29,7 +27,7 @@ class MessagesResource {
     if (newMessage.chat != ChatId(chatIdStr))
       throw (BadRequestException({}, 'Wrong chat'));
     final createdMessage = await messagesCollection.insert(newMessage);
-    wsChannels.forEach((wsChannel) {
+    wsChannels.channels.forEach((wsChannel) {
       wsChannel.sink
           .add(json.encode(createdMessage.json, toEncodable: toEncodable));
     });

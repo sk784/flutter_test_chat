@@ -1,10 +1,6 @@
 import 'package:chat_mobile/chat_component.dart';
 import 'package:flutter/material.dart';
-import 'app.dart';
 
-<<<<<<< HEAD
-void main() => runApp(App());
-=======
 import 'chat_list.dart';
 import 'create_chat.dart';
 import 'globals.dart' as globals;
@@ -54,4 +50,3 @@ class _SimpleChatAppState extends State<SimpleChatApp> {
     );
   }
 }
->>>>>>> tech-train

@@ -11,10 +11,13 @@ class UsersClient extends ResourceClient<User> {
         method: HttpMethod.post,
         resourcePath: '$resourcePath/login',
         body: {'username': username, 'password': password}));
-
+    print(response.body.runtimeType);
     return processResponse(response);
   }
 
   @override
-  User createModel(Map<String, dynamic> json) => User.fromJson(json);
+  User createModel(Map<String, dynamic> json) {
+    print(json);
+    return User.fromJson(json);
+  }
 }

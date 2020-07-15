@@ -1,8 +1,7 @@
-import 'dart:io' show HttpException;
-
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/routes.dart';
 import 'package:chat_web/services.dart';
@@ -18,12 +17,12 @@ import 'package:chat_web/services.dart';
       materialInputDirectives,
     ],
     providers: [
-      ClassProvider(WebUsersClient),
+      ClassProvider(UsersClient),
     ])
 class SignUpComponent {
   String name = '';
   String password = '';
-  WebUsersClient usersClient;
+  UsersClient usersClient;
   Session session;
   Router router;
 

@@ -5,16 +5,12 @@ import 'package:chat_models/chat_models.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:rest_api_server/annotations.dart';
 import 'package:rest_api_server/http_exception.dart';
-
-import 'messages_resource.dart';
+import 'package:rest_api_server/service_registry.dart';
 
 /// Chats resource
+@Resource(path: 'chats')
 class ChatsResource {
-  final ChatsCollection chatsCollection;
-  final MessagesResource _messagesResource;
-
-  ChatsResource({this.chatsCollection, MessagesResource messagesResource})
-      : _messagesResource = messagesResource;
+  final ChatsCollection chatsCollection = locateService<ChatsCollection>();
 
   /// Reads chat objects from database
   @Get()
@@ -40,8 +36,4 @@ class ChatsResource {
     if (found.length != 0) return found.first;
     return chatsCollection.insert(newChat);
   }
-
-  /// Chat messages resource
-  @Resource(path: '{chatIdStr}/messages')
-  MessagesResource get messagesResource => _messagesResource;
 }

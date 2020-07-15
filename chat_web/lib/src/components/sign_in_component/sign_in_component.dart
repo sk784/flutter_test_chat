@@ -1,8 +1,7 @@
-import 'dart:io' show HttpException;
-
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_web/routes.dart';
 import 'package:chat_web/services.dart';
 
@@ -18,7 +17,7 @@ import 'package:chat_web/services.dart';
       routerDirectives
     ],
     providers: [
-      ClassProvider(WebUsersClient)
+      ClassProvider(UsersClient)
     ],
     exports: [
       RoutePaths
@@ -26,12 +25,11 @@ import 'package:chat_web/services.dart';
 class SignInComponent {
   String username = '';
   String password = '';
-  WebUsersClient usersClient;
+  UsersClient usersClient;
   Router router;
   Session session;
-  
-  SignInComponent(this.usersClient, this.router, this.session);
 
+  SignInComponent(this.usersClient, this.router, this.session);
 
   signIn() async {
     try {

@@ -1,8 +1,7 @@
-import 'dart:io' show HttpException;
-
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/components.dart';
 import 'package:chat_web/routes.dart';
@@ -27,11 +26,11 @@ import 'package:chat_web/services.dart';
     ],
     providers: [
       overlayBindings,
-      ClassProvider(WebChatsClient)
+      ClassProvider(ChatsClient)
     ])
 class ChatListComponent implements OnInit {
   Session session;
-  WebChatsClient chatsClient;
+  ChatsClient chatsClient;
   Router router;
 
   List<Chat> chats = [];

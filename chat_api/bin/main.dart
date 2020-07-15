@@ -1,34 +1,44 @@
 import 'dart:io';
 
 import 'package:chat_api/collections.dart';
-import 'package:chat_api/resources.dart';
+import 'package:chat_api/helpers.dart';
+// ignore: uri_has_not_been_generated
+import 'package:chat_api/routes.g.dart' as generated;
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:rest_api_server/api_server.dart';
 import 'package:rest_api_server/auth_middleware.dart';
 import 'package:rest_api_server/cors_headers_middleware.dart';
 import 'package:rest_api_server/http_exception_middleware.dart';
+import 'package:rest_api_server/service_registry.dart';
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 main() async {
   final db = mongo.Db('mongodb://localhost:27017/simple_chat');
   await db.open();
-  final chatsCollection = ChatsCollection(mongo.DbCollection(db, 'chats'));
-  final messagesCollection =
-      MessagesCollection(mongo.DbCollection(db, 'messages'));
-  final usersCollection = UsersCollection(mongo.DbCollection(db, 'users'));
-  final wsChannels = <WebSocketChannel>[];
-  final router = Router();
-  router.add(ApiResource(
-      chatsResource: ChatsResource(
-        chatsCollection: chatsCollection,
-        messagesResource: MessagesResource(
-            chatsCollection: chatsCollection,
-            messagesCollection: messagesCollection,
-            wsChannels: wsChannels),
-      ),
-      usersResource: UsersResource(usersCollection: usersCollection),
-      wsChannels: wsChannels));
+
+  register<ChatsCollection>(ChatsCollection(mongo.DbCollection(db, 'chats')));
+  register<MessagesCollection>(
+      MessagesCollection(mongo.DbCollection(db, 'messages')));
+  register<UsersCollection>(UsersCollection(mongo.DbCollection(db, 'users')));
+  register<Jwt>(Jwt(
+      securityKey: 'secret key',
+      issuer: 'Simple Chat',
+      maxAge: Duration(hours: 1)));
+  register<WsChannels>(WsChannels());
+
+  final router = Router(generated.routes);
+
+  final loginPaths = {
+    'POST': ['/users/login']
+  };
+
+  final excludePaths = {
+    'POST': [
+      ...loginPaths['POST'],
+      '/users',
+    ],
+    'GET': ['/ws'],
+  };
 
   final server = ApiServer(
       address: InternetAddress.anyIPv4,
@@ -43,15 +53,9 @@ main() async {
           }))
           .addMiddleware(HttpExceptionMiddleware())
           .addMiddleware(AuthMiddleware(
-              loginPath: '/users/login',
-              exclude: {
-                'POST': ['/users/login', '/users'],
-                'GET': ['/ws']
-              },
-              jwt: Jwt(
-                  securityKey: 'secret key',
-                  issuer: 'Simple Chat',
-                  maxAge: Duration(hours: 1))))
+              loginPaths: loginPaths,
+              exclude: excludePaths,
+              jwt: locateService<Jwt>()))
           .addHandler(router.handler));
 
   await server.start();

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:angular_test/angular_test.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/routes.dart';
 import 'package:chat_web/services.dart';
@@ -17,57 +18,54 @@ import 'sign_in_component_test.template.dart' as self;
 import 'utils.dart';
 
 class MockSession extends Mock implements Session {}
+
 class MockWebApiClient extends Mock implements WebApiClient {}
-class MockWebUsersClient extends Mock implements WebUsersClient {}
+
+class MockUsersClient extends Mock implements UsersClient {}
 
 @GenerateInjector([
   ClassProvider(Session, useClass: MockSession),
-  ClassProvider(MockWebUsersClient),
+  ClassProvider(MockUsersClient),
   routerProvidersForTesting
 ])
 // ignore: undefined_getter
 InjectorFactory rootInjector = self.rootInjector$Injector;
 
 @Directive(
-  selector: '[override]',
-  providers: [
-    ExistingProvider(WebUsersClient, MockWebUsersClient)
-  ]
-)
+    selector: '[override]',
+    providers: [ExistingProvider(UsersClient, MockUsersClient)])
 class OverrideDirective {}
 
 @Component(
-  selector: 'sign-in-test',
-  template: '<sign-in override></sign-in>',
-  directives: const [
-    OverrideDirective,
-    SignInComponent
-  ]
-)
+    selector: 'sign-in-test',
+    template: '<sign-in override></sign-in>',
+    directives: const [OverrideDirective, SignInComponent])
 class SignInTestComponent {
   @ViewChild(SignInComponent)
   SignInComponent signInComponent;
 }
 
 main() {
-  final testBed = NgTestBed.forComponent(
-    self.SignInTestComponentNgFactory,
-    rootInjector: rootInjector
-  );
+  final testBed = NgTestBed.forComponent(self.SignInTestComponentNgFactory,
+      rootInjector: rootInjector);
   NgTestFixture<SignInTestComponent> fixture;
   SignInComponentPO po;
   Injector injector;
 
   setUp(() async {
-    fixture = await testBed.create(beforeComponentCreated: (injr) {injector = injr;});
-    final context = HtmlPageLoaderElement.createFromElement(fixture.rootElement);
+    fixture = await testBed.create(beforeComponentCreated: (injr) {
+      injector = injr;
+    });
+    final context =
+        HtmlPageLoaderElement.createFromElement(fixture.rootElement);
     po = SignInComponentPO.create(context);
   });
 
   tearDown(disposeAnyRunningTest);
 
   test('basic', () {
-    expect(fixture.text, stringContainsInOrder(['username', 'password', 'Sign In', 'Sign Up']));
+    expect(fixture.text,
+        stringContainsInOrder(['username', 'password', 'Sign In', 'Sign Up']));
   });
 
   test('username input', () {
@@ -95,7 +93,7 @@ main() {
   });
 
   test('sign in button click calls signIn method', () async {
-    final webUsersClient = injector.get(MockWebUsersClient);
+    final webUsersClient = injector.get(MockUsersClient);
     await fixture.update((c) {
       c.signInComponent.username = 'username';
       c.signInComponent.password = 'password';
@@ -106,11 +104,9 @@ main() {
 
   test('navigate after successful login', () async {
     final router = injector.get(Router);
-    final webUsersClient = injector.get(MockWebUsersClient);
-    when(webUsersClient.login('username', 'password')).thenAnswer((_) => Future.value(User(
-      id: UserId('id'),
-      name: 'username'
-    )));
+    final webUsersClient = injector.get(MockUsersClient);
+    when(webUsersClient.login('username', 'password')).thenAnswer(
+        (_) => Future.value(User(id: UserId('id'), name: 'username')));
     fixture.update((c) async {
       c.signInComponent.username = 'username';
       c.signInComponent.password = 'password';

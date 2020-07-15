@@ -1,7 +1,6 @@
-import 'dart:io' show HttpException;
-
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/services.dart';
 
@@ -17,10 +16,10 @@ import 'package:chat_web/services.dart';
       MaterialSelectItemComponent
     ],
     providers: [
-      ClassProvider(WebUsersClient)
+      ClassProvider(UsersClient)
     ])
 class UsersListComponent implements OnInit {
-  WebUsersClient _usersClient;
+  UsersClient _usersClient;
   Session _session;
 
   List<User> users = [];

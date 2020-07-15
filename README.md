@@ -32,7 +32,7 @@
 
 Для запуска приложения необходимо:
 
-* Установить на рабочем компьютере [Dart SDK](https://webdev.dartlang.org/tools/sdk#install) версии не ниже 2.0.0
+* Установить на рабочем компьютере [Dart SDK](https://webdev.dartlang.org/tools/sdk#install) версии не ниже 2.7.0
 * Для сборки мобильного приложения необходимо установить [Flutter](https://flutter.io/docs/get-started/install)
 * Получить копию данного репозитория на своем рабочем компьютере
 * Для запуска серверной части необходимо предварительно запустить сервер MongoDb так, чтобы к нему можно было подключиться на `localhost:27017`. Это можно сделать, либо [установив локально сервер MongoDb](https://docs.mongodb.com/manual/installation/), либо запустив сервер в [docker-контейнере](https://hub.docker.com/_/mongo)
@@ -43,20 +43,23 @@
 
 1. `cd /path/to/chat_api`
 2. `pub get`
-3. `dart bin/main.dart`
+3. `pub run build_runner build`
+4. `dart bin/main.dart`
 
 ### Запуск web-клиента
 
-1. `pub global activate webdev`
-2. `cd /path/to/chat_web`
-3. `pub get`
-4. `webdev serve`
+1. `cd /path/to/chat_web`
+2. `pub get`
+3. `pub run webdev serve`
 
 После этого приложение будет доступно на `localhost:8080`
 
 ### Запуск мобильного клиента
 
-Описание появится после реализации мобильного клиента
+1. `cd /path/to/chat_mobile`
+2. `flutter pub get`
+3. Запустить эмулятор IOS или Android
+4. `flutter run`
 
 ## Материалы для изучения
 

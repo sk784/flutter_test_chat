@@ -1,29 +1,38 @@
 import 'dart:convert';
-import 'dart:io' show HttpException;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:chat_api_client/chat_api_client.dart';
 import 'package:chat_models/chat_models.dart';
 import 'package:chat_web/routes.dart';
 import 'package:chat_web/services.dart';
 import 'package:web_socket_channel/html.dart';
 
-@Component(selector: 'chat', templateUrl: 'chat_component.html', styleUrls: [
-  'chat_component.css'
-], directives: [
-  coreDirectives,
-  materialInputDirectives,
-  MaterialButtonComponent,
-  MaterialIconComponent
-], pipes: [
-  DatePipe
-], providers: [
-  materialProviders,
-  ClassProvider(WebMessagesClient)
-])
+@Component(
+  selector: 'chat',
+  templateUrl: 'chat_component.html',
+  styleUrls: [
+    'chat_component.css',
+  ],
+  directives: [
+    coreDirectives,
+    materialInputDirectives,
+    MaterialButtonComponent,
+    MaterialIconComponent,
+  ],
+  pipes: [
+    DatePipe,
+  ],
+  providers: [
+    materialProviders,
+    ClassProvider(
+      MessagesClient,
+    )
+  ],
+)
 class ChatComponent implements OnActivate, OnDeactivate {
-  WebMessagesClient messagesClient;
+  MessagesClient messagesClient;
   Router router;
   Session session;
   ChatId chatId;
