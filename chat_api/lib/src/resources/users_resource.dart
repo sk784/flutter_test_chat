@@ -49,6 +49,16 @@ class UsersResource {
     return usersCollection.insert(newUser);
   }
 
+  /// Updates user
+  @Patch()
+  Future<User> update(Map requestBody, Map context) async {
+    final user = User.fromJson(requestBody);
+    final currentUser = User.fromJson(context['payload']);
+    if (user.id != currentUser.id)
+      throw ForbiddenException({}, 'You are not allowed to update this user');
+    return usersCollection.update(user);
+  }
+
   /// Reads users from database
   @Get()
   Future<List<User>> read(String name, Map context) {
