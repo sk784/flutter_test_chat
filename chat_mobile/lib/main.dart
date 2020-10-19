@@ -1,52 +1,23 @@
-import 'package:chat_mobile/chat_component.dart';
+import 'package:chat_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'chat_list.dart';
-import 'create_chat.dart';
-import 'globals.dart' as globals;
-import 'login.dart';
-
-void main() => runApp(SimpleChatApp());
-
-class SimpleChatApp extends StatefulWidget {
-  final ChatComponent _chatComponent = ChatComponent(globals.webSocketAddress);
-
-  @override
-  _SimpleChatAppState createState() => _SimpleChatAppState();
+void main() {
+  runApp(MyApp());
 }
 
-class _SimpleChatAppState extends State<SimpleChatApp> {
-  @override
-  void initState() {
-    super.initState();
-    widget._chatComponent.connect();
-  }
-
-  @override
-  void dispose() {
-    widget._chatComponent.dispose();
-    super.dispose();
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChatComponentWidget(
-      widget._chatComponent,
-      MaterialApp(
-        title: 'Simple Chat',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => LoginPage(),
-          '/chat_list': (context) => ChatListPage(
-                title: 'Chat list',
-                chatComponent: widget._chatComponent,
-              ),
-          '/create_chat': (context) => CreateChatPage(title: 'Create Chat'),
-        },
+    return GetMaterialApp(
+      title: 'Simple Chat',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      initialRoute: "/",
+      getPages: routes(),
     );
   }
 }
+
